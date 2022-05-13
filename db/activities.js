@@ -22,7 +22,16 @@ const getActivityById = async (id) => {
 
 const getAllActivities = async () =>{
   try {
+    const { rows: activities } = await client.query(`
+      SELECT * FROM activities;
+    `); //client.query
     
+    if (activities) {
+      return activities;
+    } else {
+      throw new Error('No activities found');
+    } // else
+
   } catch (error) {
     console.error (error);
   } // catch
