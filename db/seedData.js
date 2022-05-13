@@ -1,9 +1,17 @@
 // require in the database adapter functions as you write them (createUser, createActivity...)
 // const { } = require('./');
 const client = require("./client")
-const { createUser, createActivity, createRoutine, createRoutineActivity } = require('./');
+const {
+  addActivityToRoutine,
+  createUser,
+  createActivity,
+  createRoutine, 
+  createRoutineActivity,
+  getAllActivities,
+  getRoutinesWithoutActivities,
+} = require('./');
 
-async function dropTables() {
+const dropTables = async () => {
   console.log("Dropping All Tables...")
   // drop all tables, in the correct order
   await client.query(`
@@ -12,9 +20,9 @@ async function dropTables() {
     DROP TABLE IF EXISTS activities;
     DROP TABLE IF EXISTS users;
   `);
-}
+}; //dropTables
 
-async function createTables() {
+const createTables = async () => {
   console.log("Starting to build tables...")
   // create all tables, in the correct order
   await client.query(`
@@ -46,7 +54,7 @@ async function createTables() {
       UNIQUE ("routineId", "activityId")
     );
   `); //client.query
-}
+}; //createTables
 
 /* 
 
@@ -54,7 +62,7 @@ DO NOT CHANGE ANYTHING BELOW. This is default seed data, and will help you start
 
 */
 
-async function createInitialUsers() {
+const createInitialUsers = async () => {
   console.log("Starting to create users...")
   try {
     const usersToCreate = [
@@ -71,8 +79,9 @@ async function createInitialUsers() {
     console.error("Error creating users!")
     throw error
   }
-}
-async function createInitialActivities() {
+}; //createInitialUsers
+
+const createInitialActivities =async () => {
   try {
     console.log("Starting to create activities...")
 
@@ -105,9 +114,9 @@ async function createInitialActivities() {
     console.error("Error creating activities!")
     throw error
   }
-}
+}; //createInitialActivities
 
-async function createInitialRoutines() {
+const createInitialRoutines = async () =>{
   console.log("starting to create routines...")
 
   const routinesToCreate = [
@@ -141,9 +150,9 @@ async function createInitialRoutines() {
   )
   console.log("Routines Created: ", routines)
   console.log("Finished creating routines.")
-}
+}; // createInitiaRoutines
 
-async function createInitialRoutineActivities() {
+const createInitialRoutineActivities = async () =>{
   console.log("starting to create routine_activities...")
   const [bicepRoutine, chestRoutine, legRoutine, cardioRoutine] =
     await getRoutinesWithoutActivities()
@@ -211,9 +220,9 @@ async function createInitialRoutineActivities() {
   )
   console.log("routine_activities created: ", routineActivities)
   console.log("Finished creating routine_activities!")
-}
+}; //createInitialRoutineActivities
 
-async function rebuildDB() {
+const rebuildDB = async () =>{
   try {
     await dropTables()
     await createTables()
@@ -225,10 +234,10 @@ async function rebuildDB() {
     console.log("Error during rebuildDB")
     throw error
   }
-}
+}; //rebuildDB
 
 module.exports = {
   rebuildDB,
   dropTables,
   createTables,
-}
+};

@@ -2,12 +2,12 @@ const client = require("./client")
 
 // database functions
 
-const getActivityById = async (id) => {
+const getActivityById = async (activityId) => {
   try {
     const { rows: [activity] } = await client.query(`
       SELECT * FROM activities
       WHERE id = $1;
-    `); //client.query
+    `, [ activityId ]); //client.query
 
     if (activity) {
       return activity;
@@ -22,12 +22,12 @@ const getActivityById = async (id) => {
 
 const getAllActivities = async () =>{
   try {
-    const { rows: activities } = await client.query(`
+    const { rows } = await client.query(`
       SELECT * FROM activities;
     `); //client.query
     
-    if (activities) {
-      return activities;
+    if (rows) {
+      return rows;
     } else {
       throw new Error('No activities found');
     } // else
@@ -75,6 +75,19 @@ const createActivity = async ({ name, description }) => {
 // return the new activity
 const updateActivity = async ({ id, ...fields }) => {
   try {
+    const { name, description } = fields;
+    const { rows: [activity] } = await client.query(`
+      UPDATE activities
+      SET name = $1, description = $2
+      WHERE id = $3
+      RETURNING *;
+    `, [ name, description ]); //client.query
+
+    if (activity) {
+      return activity;
+    } else {
+      throw new Error('Activity not updated');
+    } // else
     
   } catch (error) {
     console.error (error);

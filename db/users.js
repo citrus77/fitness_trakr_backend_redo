@@ -8,14 +8,13 @@ const getUserByUsername = async (username) => {
     const { rows: [user] } = await client.query(`
       SELECT * FROM users
       WHERE username = $1;
-    `, [username]); //client.query
+    `, [ username ]); //client.query
 
     if (user) {
       return user;
     } else {
       throw new Error('User not found');
-    } // else
-      
+    } // else      
   } catch (error) {
     console.error(error);
   } // catch
@@ -35,7 +34,7 @@ const createUser = async ({ username, password }) => {
         VALUES ($1, $2)
         ON CONFLICT (username) DO NOTHING
         RETURNING *;
-      `, [username, hashedPwd]); //client.query
+      `, [ username, hashedPwd ]); //client.query
 
       if (user) {
         delete user.password;
@@ -43,7 +42,6 @@ const createUser = async ({ username, password }) => {
       } else {
         throw new Error('User not created');
       } // else
-
     } // else
   } catch (error) {
     console.error(error);
@@ -70,7 +68,7 @@ const getUserById = async (userId) => {
     const { rows: [user] } = await client.query(`
       SELECT * FROM users
       WHERE id = $1;
-    `, [userId]); //client.query
+    `, [ userId ]); //client.query
 
     if (user) {
       delete user.password;
@@ -78,7 +76,6 @@ const getUserById = async (userId) => {
     } else {
       return null;
     } // else
-        
   } catch (error) {
     console.error(error);
   } // catch
