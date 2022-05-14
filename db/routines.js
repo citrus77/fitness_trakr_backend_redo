@@ -1,7 +1,17 @@
 const client = require('./client');
 
-async function getRoutineById(id){
-}
+const getRoutineById = aysnc (routineId) => {
+  const { rows: [routine] } = await client.query(`
+    SELECT * FROM routines
+    WHERE id = $1;
+  `, [ routineId ]); //client.query
+
+  if (routine) {
+    return routine;
+  } else {
+    throw new Error('Routine not found');
+  } // else
+}; // getRoutineById
 
 async function getRoutinesWithoutActivities(){
 }
