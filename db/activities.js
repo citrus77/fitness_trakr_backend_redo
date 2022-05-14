@@ -13,7 +13,7 @@ const getActivityById = async (activityId) => {
       return activity;
     } else {
       throw new Error('Activity not found');
-    }; // else
+    } // else
     
   } catch (error) {
     console.error (error);
@@ -39,7 +39,16 @@ const getAllActivities = async () =>{
 
 const getActivityByName = async (name) => {
   try {
+    const { rows: [activity] } = await client.query(`
+      SELECT * FROM activities
+      WHERE name = $1;
+    `, [ name ]); //client.query
     
+    if (activity) {
+      return activity;
+    } else {
+      throw new Error('Activity not found');
+    } // else
   } catch (error) {
     console.error (error);
   } // catch
@@ -47,7 +56,7 @@ const getActivityByName = async (name) => {
 
 const attachActivitiesToRoutines = async (routines) => {
   try {
-    
+    console.log(routines)
   } catch (error) {
     console.error (error);
   } // catch
@@ -81,7 +90,7 @@ const updateActivity = async ({ id, ...fields }) => {
       SET name = $1, description = $2
       WHERE id = $3
       RETURNING *;
-    `, [ name, description ]); //client.query
+    `, [ id, name, description ]); //client.query
 
     if (activity) {
       return activity;

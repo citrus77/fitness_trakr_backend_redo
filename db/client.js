@@ -1,10 +1,9 @@
-const { Pool } = require('pg');
 
-const connectionString = process.env.DATABASE_URL || 'https://localhost:5432/fitness-dev';
+// build and export your unconnected client here
+const { Client } = require('pg');
 
-const client = new Pool({
-  connectionString,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : undefined,
-});
+const CONNECTION_STRING = process.env.DATABASE_URL || 'postgres://localhost:5432/fitness-dev'
+
+const client = new Client(CONNECTION_STRING);
 
 module.exports = client;

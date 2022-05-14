@@ -1,4 +1,4 @@
-const client = require("./client");
+const client = require('./client');
 const bcrypt = require('bcrypt');
 // database functions
 
@@ -22,12 +22,16 @@ const getUserByUsername = async (username) => {
 
 const createUser = async ({ username, password }) => {
   try {
+    console.log(username, password)
+
     const SALT_COUNT = 10;    
     const _user = await getUserByUsername(username);
+
     if (_user || password.length < 8 || !username || !password) {
       throw new Error('User already exists or invalid username or password');
     } else {
       const hashedPwd = await bcrypt.hash(password, SALT_COUNT);
+      console.log(hashedPwd)
 
       const { rows: [user] } = await client.query(`
         INSERT INTO users (username, password)
@@ -56,7 +60,7 @@ const getUser = async ({ username, password }) => {
       delete user.password;
       return user;
     } else {
-      return null;
+      throw new Error ('Invalid username or password');
     } // else    
   } catch (error) {
     console.error(error);

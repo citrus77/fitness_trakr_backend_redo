@@ -1,12 +1,11 @@
 // require in the database adapter functions as you write them (createUser, createActivity...)
 // const { } = require('./');
-const client = require("./client")
+const client = require('./client');
 const {
   addActivityToRoutine,
   createUser,
   createActivity,
-  createRoutine, 
-  createRoutineActivity,
+  createRoutine,
   getAllActivities,
   getRoutinesWithoutActivities,
 } = require('./');
@@ -32,17 +31,17 @@ const createTables = async () => {
       password VARCHAR(255) UNIQUE NOT NULL
     );
 
-    CREATE TABLE activities(
-      id SERIAL PRIMARY KEY,
-      name VARCHAR(255) UNIQUE NOT NULL,
-      description VARCHAR(255) NOT NULL
-    );
-
     CREATE TABLE routines(
       id SERIAL PRIMARY KEY,
       creatorId INTEGER REFERENCES users(id),
       name VARCHAR(255) UNIQUE NOT NULL,
       goal VARCHAR(255) NOT NULL,
+    );
+
+    CREATE TABLE activities(
+      id SERIAL PRIMARY KEY,
+      name VARCHAR(255) UNIQUE NOT NULL,
+      description VARCHAR(255) NOT NULL
     );
 
     CREATE TABLE routine_activities(
@@ -81,7 +80,7 @@ const createInitialUsers = async () => {
   }
 }; //createInitialUsers
 
-const createInitialActivities =async () => {
+const createInitialActivities = async () => {
   try {
     console.log("Starting to create activities...")
 
@@ -116,7 +115,7 @@ const createInitialActivities =async () => {
   }
 }; //createInitialActivities
 
-const createInitialRoutines = async () =>{
+const createInitialRoutines = async () => {
   console.log("starting to create routines...")
 
   const routinesToCreate = [
@@ -152,7 +151,7 @@ const createInitialRoutines = async () =>{
   console.log("Finished creating routines.")
 }; // createInitiaRoutines
 
-const createInitialRoutineActivities = async () =>{
+const createInitialRoutineActivities = async () => {
   console.log("starting to create routine_activities...")
   const [bicepRoutine, chestRoutine, legRoutine, cardioRoutine] =
     await getRoutinesWithoutActivities()
@@ -222,17 +221,18 @@ const createInitialRoutineActivities = async () =>{
   console.log("Finished creating routine_activities!")
 }; //createInitialRoutineActivities
 
-const rebuildDB = async () =>{
+const rebuildDB = async () => {
   try {
-    await dropTables()
-    await createTables()
-    await createInitialUsers()
-    await createInitialActivities()
-    await createInitialRoutines()
-    await createInitialRoutineActivities()
+    client.connect();
+    await dropTables();
+    await createTables();
+    await createInitialUsers();
+    await createInitialActivities();
+    await createInitialRoutines();
+    await createInitialRoutineActivities();
   } catch (error) {
-    console.log("Error during rebuildDB")
-    throw error
+    console.error("Error during rebuildDB")
+    throw error;
   }
 }; //rebuildDB
 
